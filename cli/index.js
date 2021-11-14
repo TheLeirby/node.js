@@ -24,9 +24,10 @@ function doParametr(code,inputParam){
                 code=decodeCaesar(`${code}`,1);                                            
             } else {
                 code=`error!`                
-                i=inputParam.length+1;
-                console.error(process.stderr.write(`Error: Attention! the request was not made correctly`))
-                process.exit();
+                i=inputParam.length+1;                
+                    console.error(process.stderr.write(`Error: Attention! the request was not made correctly`))
+                    process.exit(1);
+                
             }
         } else if (inputParam[i] == `A`) {
             code=enAtbash(`${code}`);                                                                                    
@@ -41,7 +42,7 @@ function doParametr(code,inputParam){
                 
                 i=inputParam.length+1;
                 console.error(process.stderr.write(`Error: Attention! the request was not made correctly`))
-                process.exit();
+                process.exit(1);
             }
         } else {
             
@@ -49,7 +50,7 @@ function doParametr(code,inputParam){
             
             i=inputParam.length+1;
             console.error(process.stderr.write(`Error: Attention! the request was not made correctly`))
-            process.exit();
+            process.exit(1);
         }
         i++;
 
@@ -74,7 +75,7 @@ function whereIsParametr(shortString,longString,n){
         return whereParametr;
     } else if (isParametr>=2){
         console.error(process.stderr.write(`Error: Attention! Parametrs: `+longString+` is too much  `));
-        process.exit();        
+        process.exit(1);        
     } 
 }
 
@@ -89,7 +90,7 @@ if (process.argv.length==4) {
     let inputParam = process.argv[whereIsParametr("-c","--config",1)]; 
     if  (inputParam==undefined) {
         process.stderr.write(`Error: Attention! Parametrs: `+process.argv[2]+` is not right\n`);
-        process.exit(); 
+        process.exit(1); 
    } 
     if  (outputPath==undefined) {
          process.stdout.write('The output file is not specified, we will output it to the console')
@@ -106,11 +107,11 @@ if (process.argv.length==4) {
     });
      rl.on('SIGINT', () => {
         process.stdout.write(`Bay\n`)
-        process.exit();  
+        process.exit(1);  
     })
     rl.on('SIGTSTP', () => {
         process.stdout.write(`Bay\n`) 
-        process.exit();  
+        process.exit(1);  
 
     }) 
 }
@@ -125,13 +126,13 @@ if (process.argv.length==6) {
           fs.stat(outputPath, function(err, stats) {
             if (err) {
                 process.stderr.write(`Error: Output File not found\n`);
-                process.exit(); 
+                process.exit(1); 
                 
 
             } else {         
                 if  (inputParam==undefined) {
                   process.stderr.write(`Error: Attention! Parametrs: on config is not right\n`);
-                  process.exit(); 
+                  process.exit(1); 
                 }        
                 if  (inputPath==undefined) {
                     process.stdout.write(`You have not entered the source text, please  do it from console. When need exit, press CTRL + C\n`);    
@@ -147,7 +148,7 @@ if (process.argv.length==6) {
                     fs.stat(inputPath,  function(error, stats){    
                         if (error ) {
                             process.stderr.write(`Error: Ssory, file not found or not correct write file name `)
-                            process.exit();
+                            process.exit(1);
 
                         } else {    
                             const readStream = fs.createReadStream(inputPath) 
@@ -155,7 +156,7 @@ if (process.argv.length==6) {
                                                 
                                     if (error) {
                                         process.stderr.write(`Error:ssory, error on chunk `+chunk)
-                                        process.exit();
+                                        process.exit(1);
                                     } else {
                                         if  (outputPath!==undefined) {
                                         
@@ -179,11 +180,11 @@ if (process.argv.length==6) {
                     });
                     rl.on('SIGINT', () => {
                         process.stdout.write(`Save... to file ${outputPath}\n`)
-                        process.exit();  
+                        process.exit(1);  
                     })
                     rl.on('SIGTSTP', () => {
                         process.stdout.write(`Save... to file ${outputPath}\n`) 
-                        process.exit();  
+                        process.exit(1);  
                     })
                 }
             
@@ -193,7 +194,7 @@ if (process.argv.length==6) {
 
     } else {
         process.stderr.write(`Error: Error query `+messageHelp)
-        process.exit();
+        process.exit(1);
     }
 
     
@@ -209,7 +210,7 @@ if (process.argv.length==8) {
             fs.stat(outputPath, function(err, stats) {
               if (err) {
                   process.stderr.write(`Error: Output File not found\n`);
-                  process.exit(); 
+                  process.exit(1); 
                   
   
               } else { 
@@ -220,14 +221,14 @@ if (process.argv.length==8) {
                     fs.stat(inputPath,  function(error, stats){    
                         if (error ) {
                             process.stderr.write(`Error:ssory, file not found or not correct write file name `+messageHelp)
-                            process.exit();
+                            process.exit(1);
                         } else {    
                             const readStream = fs.createReadStream(inputPath)                
                             readStream.on('data', (chunk) =>{                                                      
                                                 
                                     if (error) {
                                         process.stderr.write(`Error:ssory, error on chunk `+chunk)
-                                        process.exit();
+                                        process.exit(1);
                                     } else {
                                         writeStream.write(doParametr(chunk,inputParam));    
                                     }
@@ -240,7 +241,7 @@ if (process.argv.length==8) {
 
     } else {
         process.stderr.write(`Error: Error query `+messageHelp);
-        process.exit();
+        process.exit(1);
     }
     
     
@@ -248,6 +249,6 @@ if (process.argv.length==8) {
 
 if (process.argv.length==3 || process.argv.length==5 || process.argv.length==7 || process.argv.length>=9 ) {
      console.error(process.stderr.write(`Error: Error query `+messageHelp));
-        process.exit();
+        process.exit(1);
 }
 
