@@ -121,78 +121,81 @@ if (process.argv.length==6) {
         let outputPath =  process.argv[whereIsParametr("-o","--output",2)];
         let inputParam = process.argv[whereIsParametr("-c","--config",2)]; 
 
-
-        if  (inputParam==undefined) {
-            process.stderr.write(`Error: Attention! Parametrs: on config is not right\n`);
-            process.exit(); 
-        }        
-        if  (inputPath==undefined) {
-            process.stdout.write(`You have not entered the source text, please  do it from console. When need exit, press CTRL + C\n`);
-            
-        } 
-                    
-   
-     
         if  (outputPath!==undefined) {
-            writeToFile(outputPath,`\n=====\n`)          
-        } else {
-            process.stdout.write('The output file is not specified, we will output it to the console')
-        }
+          fs.stat(outputPath, function(err, stats) {
+            if (err) {
+                process.stderr.write(`Error: Output File not found\n`);
+                process.exit(); 
+                
 
-        if (inputPath!==undefined){
-            fs.stat(inputPath,  function(error, stats){    
-                if (error ) {
-                    process.stderr.write(`Error: Ssory, file not found or not correct write file name `)
-                    process.exit();
-
-                } else {    
-                    const readStream = fs.createReadStream(inputPath) 
-                    readStream.on('data', (chunk) =>{                                                      
-                                           
-                            if (error) {
-                                process.stderr.write(`Error:ssory, error on chunk `+chunk)
-                                process.exit();
-                            } else {
-                                if  (outputPath!==undefined) {
-                                
-                                    writeToFile(outputPath,doParametr(chunk,inputParam))
-                                } else {                                    
-                                    process.stdout.write(`\n here you Ciphering:\n================================\n`+doParametr(chunk,inputParam)+`\n`)
-                                }
-                            }
-                    });
+            } else {         
+                if  (inputParam==undefined) {
+                  process.stderr.write(`Error: Attention! Parametrs: on config is not right\n`);
+                  process.exit(); 
+                }        
+                if  (inputPath==undefined) {
+                    process.stdout.write(`You have not entered the source text, please  do it from console. When need exit, press CTRL + C\n`);    
                 }
-            });
-        } else {
+                if  (outputPath!==undefined) {
+
+                    writeToFile(outputPath,`\n=====\n`)          
+                } else {
+                    process.stdout.write('The output file is not specified, we will output it to the console')
+                }
+
+                if (inputPath!==undefined){
+                    fs.stat(inputPath,  function(error, stats){    
+                        if (error ) {
+                            process.stderr.write(`Error: Ssory, file not found or not correct write file name `)
+                            process.exit();
+
+                        } else {    
+                            const readStream = fs.createReadStream(inputPath) 
+                            readStream.on('data', (chunk) =>{                                                      
+                                                
+                                    if (error) {
+                                        process.stderr.write(`Error:ssory, error on chunk `+chunk)
+                                        process.exit();
+                                    } else {
+                                        if  (outputPath!==undefined) {
+                                        
+                                            writeToFile(outputPath,doParametr(chunk,inputParam))
+                                        } else {                                    
+                                            process.stdout.write(`\n here you Ciphering:\n================================\n`+doParametr(chunk,inputParam)+`\n`)
+                                        }
+                                    }
+                            });
+                        }
+                    });
+                } else {
            
-                const readline = require('readline'),                
-                {stdin: input, stdout: output} = require('process'),
-                rl = readline.createInterface({ input, output }),
-                process = require('process');      
-                rl.on('line', (input) => {                    
-                    writeToFile(outputPath,doParametr(input,inputParam)+'\n')
-                   
-                });
-                rl.on('SIGINT', () => {
-                    process.stdout.write(`Save... to file ${outputPath}\n`)
-                    process.exit();  
-                })
-                rl.on('SIGTSTP', () => {
-                    process.stdout.write(`Save... to file ${outputPath}\n`) 
-                    process.exit();  
-                })
-
-
-    
-        }
+                    const readline = require('readline'),                
+                    {stdin: input, stdout: output} = require('process'),
+                    rl = readline.createInterface({ input, output }),
+                    process = require('process');      
+                    rl.on('line', (input) => {                    
+                        writeToFile(outputPath,doParametr(input,inputParam)+'\n')
+                    
+                    });
+                    rl.on('SIGINT', () => {
+                        process.stdout.write(`Save... to file ${outputPath}\n`)
+                        process.exit();  
+                    })
+                    rl.on('SIGTSTP', () => {
+                        process.stdout.write(`Save... to file ${outputPath}\n`) 
+                        process.exit();  
+                    })
+                }
             
-            
+            }
+        }); 
+      }    
 
     } else {
         process.stderr.write(`Error: Error query `+messageHelp)
         process.exit();
     }
-    
+
     
 }
 
@@ -200,27 +203,39 @@ if (process.argv.length==8) {
     if (whereIsParametr("-i","--input",3) <=8 || whereIsParametr("-o","--output",3) <=8 || whereIsParametr("-c","--config",3)<= 8 ){
         let inputPath = process.argv[whereIsParametr("-i","--input",3)]; 
         let outputPath =  process.argv[whereIsParametr("-o","--output",3)];
-        let inputParam = process.argv[whereIsParametr("-c","--config",3)];       
-        const writeStream = fs.createWriteStream(outputPath,{flags: 'a'});
-        writeStream.write(`\n|||||| = new code = ||||||||\n`);
-        fs.stat(inputPath,  function(error, stats){    
-            if (error ) {
-                process.stderr.write(`Error:ssory, file not found or not correct write file name `+messageHelp)
-                process.exit();
-            } else {    
-                const readStream = fs.createReadStream(inputPath)                
-                readStream.on('data', (chunk) =>{                                                      
-                                       
-                        if (error) {
-                            process.stderr.write(`Error:ssory, error on chunk `+chunk)
+        let inputParam = process.argv[whereIsParametr("-c","--config",3)];   
+        
+        if  (outputPath!==undefined) {
+            fs.stat(outputPath, function(err, stats) {
+              if (err) {
+                  process.stderr.write(`Error: Output File not found\n`);
+                  process.exit(); 
+                  
+  
+              } else { 
+
+
+                    const writeStream = fs.createWriteStream(outputPath,{flags: 'a'});
+                    writeStream.write(`\n|||||| = new code = ||||||||\n`);
+                    fs.stat(inputPath,  function(error, stats){    
+                        if (error ) {
+                            process.stderr.write(`Error:ssory, file not found or not correct write file name `+messageHelp)
                             process.exit();
-                        } else {
-                            writeStream.write(doParametr(chunk,inputParam));    
+                        } else {    
+                            const readStream = fs.createReadStream(inputPath)                
+                            readStream.on('data', (chunk) =>{                                                      
+                                                
+                                    if (error) {
+                                        process.stderr.write(`Error:ssory, error on chunk `+chunk)
+                                        process.exit();
+                                    } else {
+                                        writeStream.write(doParametr(chunk,inputParam));    
+                                    }
+                            });
                         }
-                });
-            }
-        });
-            
+                    });
+                }
+            })}     
             
 
     } else {
